@@ -2,7 +2,6 @@ import { AWSHandler } from './aws'
 import { ServerlessHandler } from './core'
 
 const awsHandler = new AWSHandler()
-const serverlessHandler = new ServerlessHandler(awsHandler)
+const serverlessizer = new ServerlessHandler(awsHandler)
 
-export default serverlessHandler.handle
-export const aws = awsHandler.handle
+export default serverlessizer.handle.bind(serverlessizer)

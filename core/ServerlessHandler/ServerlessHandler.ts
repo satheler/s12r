@@ -1,4 +1,4 @@
-import { CloudHandler, CloudRequest, CloudResponse } from 'core/CloudHandler'
+import { CloudHandler, CloudRequest, CloudResponse } from '..'
 
 export class ServerlessHandler implements CloudHandler {
   constructor(
