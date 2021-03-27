@@ -1,2 +1,2 @@
-export * from './ServerlessHandler'
+export * from './Serverlessize'
 export * from './CloudHandler'

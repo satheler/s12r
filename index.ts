@@ -1,7 +1,9 @@
+import { ApiGatewayProxy } from 'aws/ApiGatewayProxy'
 import { AWSHandler } from './aws'
-import { ServerlessHandler } from './core'
+import { CloudRequest, Serverlessize } from './core'
 
 const awsHandler = new AWSHandler()
-const serverlessizer = new ServerlessHandler(awsHandler)
+const serverlessizer = new Serverlessize(awsHandler)
 
-export default serverlessizer.handle.bind(serverlessizer)
+export default (args: any[]) => serverlessizer.handle(args)
+export const ServerlessizeAWS = (args: CloudRequest<ApiGatewayProxy>) => awsHandler.handle(args)
