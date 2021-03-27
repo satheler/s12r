@@ -1,1 +1,1 @@
-export type CloudRequest<T = never> = T extends any ? T : any[]
+export type CloudRequest<T = any> = T extends any ? T : any[]
