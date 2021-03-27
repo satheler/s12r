@@ -3,6 +3,8 @@
   "version": "0.1.7",
   "description": "Serverlessize your node application",
   "main": "build/index.js",
+  "author": "Gustavo Bittencourt Satheler <gustavosatheler@gmail.com>",
+  "license": "MIT",
   "directories": {
     "example": "examples"
   },
@@ -20,8 +22,6 @@
     "serverless",
     "cloud-adapters"
   ],
-  "author": "Gustavo Bittencourt Satheler",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/satheler/s12r/issues"
   },

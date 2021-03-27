@@ -1,10 +1,10 @@
-# Serverlessize (S12R)
+# Serverlessizer (S12R)
 
 Serverlessize your Node.js backend application to main clouds providers. With this package you can run your application on the **Function as a Service** on many cloud providers with same configuration.
 
 ## 📑 Overview
 
-1. **[📥 Installation](#installation)**
+1. **[📥 Installation](#-installation)**
 2. **[☁️ Supported Cloud Providers](#%EF%B8%8F-supported-cloud-providers)**
 3. **[🧩 Supported frameworks](#supported-frameworks)**
    - **[Adonis](#adonis)**
@@ -46,7 +46,7 @@ The following sections is the currently support frameworks.
 import 'reflect-metadata'
 import { ServerContract } from '@ioc:Adonis/Core/Server'
 import { Ignitor } from '@adonisjs/core/build/standalone'
-import Serverlessize from '@satheler/s12r'
+import Serverlessizer from '@satheler/s12r'
 
 let server: ServerContract
 
@@ -70,7 +70,7 @@ export const handle = async (...args: any[]) => {
     server = await bootstrapServer()
   }
 
-  const { request, response } = Serverlessize(args)
+  const { request, response } = Serverlessizer(args)
   return server.handle(request, response)
 }
 ```
@@ -106,7 +106,7 @@ provider:
 
 functions:
   app:
-    handler: build/serverlessize.handle
+    handler: build/serverlessizer.handle
     layers:
       - { Ref: NodeModulesLambdaLayer }
     events:
