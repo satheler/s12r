@@ -11,7 +11,10 @@
     "baseUrl": "."
   },
   "include": [
-    "aws/**/*",
-    "core/**/*"
+    "**/*.ts",
+  ],
+  "exclude": [
+    "build/**/*",
+    "examples/**/*"
   ]
 }
