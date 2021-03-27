@@ -1,6 +1,6 @@
 {
   "name": "@satheler/s12r",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Serverlessize your node application",
   "main": "build/index.js",
   "directories": {
