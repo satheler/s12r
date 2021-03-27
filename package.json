@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "rimraf build && tsc",
-    "prepublish": "yarn build"
+    "prepublish": "yarn build",
+    "lint": "eslint . --ext=.ts"
   },
   "repository": {
     "type": "git",

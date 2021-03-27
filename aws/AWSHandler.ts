@@ -2,16 +2,7 @@ import Stream from 'stream'
 import { stringify } from 'querystring'
 import { IncomingMessage, ServerResponse } from 'http'
 import { CloudHandler, CloudRequest, CloudResponse } from 'core'
-import { ApiGatewayProxy } from './ApiGatewayProxy'
-
-type ResponseType = {
-  headers?: Record<string, string | string[]>
-  multiValueHeaders?: Record<string, string | string[]>
-  body: Buffer | string
-  isBase64Encoded: boolean
-  statusCode: number
-  cookies?: any[]
-}
+import { ApiGatewayProxy, ApiGatewayResponse } from './ApiGatewayProxy'
 
 const EVENT = 0
 const CALLBACK = 2
@@ -41,19 +32,19 @@ export class AWSHandler implements CloudHandler {
     const REMOVE_STAGE_PATTERN = new RegExp(`^/${event.requestContext.stage}(/)?`)
 
     const urlByVersion = this.version === '2.0'
-      ? event.requestContext.http.path || event.rawPath || '/'
-      : event.requestContext.path || event.path || event.rawPath || '/'
+      ? event.requestContext.http.path ?? event.rawPath ?? '/'
+      : event.requestContext.path ?? event.path ?? event.rawPath ?? '/'
 
     request.url = urlByVersion.replace(REMOVE_STAGE_PATTERN, '/')
     request.finished = true
 
     if (this.version === '1.0') {
       if (event.multiValueQueryStringParameters) {
-        request.url += '?' + stringify(event.multiValueQueryStringParameters)
+        request.url = request.url.concat('?', stringify(event.multiValueQueryStringParameters))
       }
     } else {
       if (event.rawQueryString) {
-        request.url += '?' + event.rawQueryString
+        request.url = request.url.concat('?', event.rawQueryString)
       }
     }
 
@@ -61,7 +52,7 @@ export class AWSHandler implements CloudHandler {
     request.rawHeaders = []
     request.headers = {}
 
-    const headers = event.multiValueHeaders || event.headers || {}
+    const headers = event.multiValueHeaders ?? event.headers ?? {}
 
     for (const key of Object.keys(headers)) {
       const headerValues =
@@ -74,7 +65,7 @@ export class AWSHandler implements CloudHandler {
     }
 
     if (this.version === '2.0') {
-      if (event.cookies && event.cookies.length) {
+      if (event?.cookies?.length) {
         for (const value of event.cookies) {
           request.rawHeaders.push('cookie')
           request.rawHeaders.push(value)
@@ -96,14 +87,14 @@ export class AWSHandler implements CloudHandler {
   }
 
   private response (callback: Function): ServerResponse {
-    const responseInitialValues: ResponseType = {
+    const responseInitialValues: ApiGatewayResponse = {
       headers: {},
       multiValueHeaders: {},
       body: Buffer.from(''),
       isBase64Encoded: this.isBase64Encoded,
       statusCode: 200,
       ...(this.version === '1.0' && { multiValueHeaders: {} }),
-      ...(this.version === '2.0' && { headers: {} }),
+      ...(this.version === '2.0' && { headers: {} })
     }
 
     const response = new Stream() as any
@@ -117,13 +108,13 @@ export class AWSHandler implements CloudHandler {
       },
       set (statusCode) {
         responseInitialValues.statusCode = statusCode
-      },
+      }
     })
-    
+
     Object.defineProperty(response, 'headersSent', {
       get () {
         return headersSent
-      },
+      }
     })
 
     response.headers = {}
@@ -141,11 +132,14 @@ export class AWSHandler implements CloudHandler {
       headersSent = true
       responseInitialValues.body = Buffer.concat([
         responseInitialValues.body as Uint8Array,
-        Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk),
+        Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
       ])
     }
 
-    response.setHeader = (name: string, value: string) => response.headers[name.toLowerCase()] = value
+    response.setHeader = (name: string, value: string) => {
+      response.headers[name.toLowerCase()] = value
+    }
+
     response.removeHeader = (name: string) => response.headers[name.toLowerCase()]
     response.getHeader = (name: string) => response.headers[name.toLowerCase()]
     response.getHeaders = () => response.headers
@@ -174,11 +168,11 @@ export class AWSHandler implements CloudHandler {
     return response
   }
 
-  private fixApiGatewayHeaders (responseInitialValues: ResponseType) {
+  private fixApiGatewayHeaders (responseInitialValues: ApiGatewayResponse): void {
     if (this.version === '1.0') {
       const { multiValueHeaders } = responseInitialValues
 
-      if(!multiValueHeaders || Object.keys(multiValueHeaders).length === 0 || multiValueHeaders.constructor !== Object){
+      if (!multiValueHeaders || Object.keys(multiValueHeaders).length === 0 || multiValueHeaders.constructor !== Object) {
         return
       }
 
@@ -198,7 +192,7 @@ export class AWSHandler implements CloudHandler {
     }
 
     const { headers } = responseInitialValues
-    if(!headers || Object.keys(headers).length === 0 || headers.constructor !== Object) {
+    if (!headers || Object.keys(headers).length === 0 || headers.constructor !== Object) {
       return
     }
 

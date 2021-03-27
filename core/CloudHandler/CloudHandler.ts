@@ -1,4 +1,4 @@
-import { CloudRequest, CloudResponse  } from ".."
+import { CloudRequest, CloudResponse } from '..'
 
 export interface CloudHandler {
   handle: (request: CloudRequest) => CloudResponse
