@@ -12,6 +12,7 @@ Serverlessize your Node.js backend application to main clouds providers. With th
    - **[Hapi (Coming soon)](#hapi-coming-soon)**
    - **[LoopBack (Coming soon)](#loopback-coming-soon)**
 4. **[⚡️ Serverless Framework](#%EF%B8%8F-serverless-framework)**
+5. **[📜 Licensing](#-licensing)**
 
 ## 📥 Installation
 
@@ -158,3 +159,9 @@ layers:
   }
 }
 ```
+
+## 📜 Licensing
+
+Serverlessizer is licensed under the [MIT License](./LICENSE).
+
+All files located in the node_modules and external directories are externally maintained libraries used by this software which have their own licenses; we recommend you read them, as their terms may differ from the terms in the MIT License.
