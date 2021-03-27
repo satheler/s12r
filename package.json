@@ -35,6 +35,8 @@
     "eslint-plugin-node": "11",
     "eslint-plugin-promise": "4",
     "git-commit-msg-linter": "^3.1.0",
+    "husky": "^5.2.0",
+    "lint-staged": "^10.5.4",
     "rimraf": "^3.0.2",
     "typescript": "^4.2.3"
   }
