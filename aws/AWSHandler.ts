@@ -35,8 +35,8 @@ export class AWSHandler implements CloudHandler {
     return { request, response }
   }
 
-  private request (event: ApiGatewayProxy[0]) {
-    const request = new Stream.Readable() as IncomingMessage
+  private request (event: ApiGatewayProxy[0]): IncomingMessage {
+    const request = new Stream.Readable() as any
 
     const REMOVE_STAGE_PATTERN = new RegExp(`^/${event.requestContext.stage}(/)?`)
 
@@ -45,6 +45,7 @@ export class AWSHandler implements CloudHandler {
       : event.requestContext.path || event.path || event.rawPath || '/'
 
     request.url = urlByVersion.replace(REMOVE_STAGE_PATTERN, '/')
+    request.finished = true
 
     if (this.version === '1.0') {
       if (event.multiValueQueryStringParameters) {
@@ -82,6 +83,10 @@ export class AWSHandler implements CloudHandler {
       }
     }
 
+    request.getHeader = (name: string) => request.headers[name.toLowerCase()]
+    request.getHeaders = () => request.headers
+    request.socket = {}
+
     if (event.body) {
       request.push(event.body, event.isBase64Encoded ? 'base64' : undefined)
       request.push(null)
@@ -90,7 +95,7 @@ export class AWSHandler implements CloudHandler {
     return request
   }
 
-  private response (callback: Function) {
+  private response (callback: Function): ServerResponse {
     const responseInitialValues: ResponseType = {
       headers: {},
       multiValueHeaders: {},
