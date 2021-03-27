@@ -85,7 +85,7 @@ export class AWSHandler implements CloudHandler {
 
     request.getHeader = (name: string) => request.headers[name.toLowerCase()]
     request.getHeaders = () => request.headers
-    request.socket = {}
+    request.connection = {}
 
     if (event.body) {
       request.push(event.body, event.isBase64Encoded ? 'base64' : undefined)
