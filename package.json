@@ -1,0 +1,32 @@
+{
+  "name": "@satheler/s12r",
+  "version": "0.1.0",
+  "description": "Serverlessize your node application",
+  "main": "build/index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/satheler/s12r.git"
+  },
+  "keywords": [
+    "faas",
+    "serverless",
+    "cloud-adapters"
+  ],
+  "author": "Gustavo Bittencourt Satheler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/satheler/s12r/issues"
+  },
+  "homepage": "https://github.com/satheler/s12r#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "typescript": "^4.2.3"
+  }
+}

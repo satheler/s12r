@@ -1,0 +1,15 @@
+# OS Files
+.DS_Store
+
+# Package directories
+node_modules
+
+# Test & Coverage directories
+coverage
+temp
+
+# Editors config directories
+.vscode
+
+# Build directories
+build
