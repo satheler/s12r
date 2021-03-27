@@ -1,6 +1,6 @@
 {
   "name": "@satheler/s12r",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Serverlessize your node application",
   "main": "build/index.js",
   "directories": {
@@ -8,8 +8,7 @@
   },
   "scripts": {
     "build": "rimraf build && tsc",
-    "publish": "yarn build  && npm publish --access public",
-    "test": "npm run test"
+    "prepublish": "yarn build"
   },
   "repository": {
     "type": "git",
