@@ -1,1 +1,2 @@
-export * from './ServerlessComposite'
+export * from './ServerlessHandler'
+export * from './CloudHandler'

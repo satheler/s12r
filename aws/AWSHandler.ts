@@ -1,7 +1,7 @@
 import Stream from 'stream'
 import { stringify } from 'querystring'
 import { IncomingMessage, ServerResponse } from 'http'
-import { CloudHandler, CloudRequest, CloudResponse } from 'core/CloudHandler'
+import { CloudHandler, CloudRequest, CloudResponse } from 'core'
 import { ApiGatewayProxy } from './ApiGatewayProxy'
 
 type ResponseType = {
