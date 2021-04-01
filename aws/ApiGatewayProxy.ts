@@ -1,4 +1,4 @@
-type ApiGatewayProxyEvent = {
+export type ApiGatewayProxyEvent = {
   version?: string
   requestContext: {
     stage: string
