@@ -1,9 +1,13 @@
-import { ApiGatewayProxy } from 'aws/ApiGatewayProxy'
-import { AWSHandler } from './aws'
-import { CloudRequest, CloudResponse, Serverlessize } from './core'
+import { AzureHandler } from './azure'
+import { ApiGatewayProxy, AWSHandler } from './aws'
+import { CloudRequest, CloudResponse, Serverlessizer } from './core'
 
 const awsHandler = new AWSHandler()
-const serverlessizer = new Serverlessize(awsHandler)
+const azureHandler = new AzureHandler()
+const serverlessizer = new Serverlessizer(awsHandler, azureHandler)
 
-export default (args: any[]): CloudResponse => serverlessizer.handle(args)
+const Serverlessize = (args: any[]): CloudResponse => serverlessizer.handle(args)
+export default Serverlessize
+
 export const ServerlessizeAWS = (args: CloudRequest<ApiGatewayProxy>): CloudResponse => awsHandler.handle(args)
+export const ServerlessizeAzure = (args: CloudRequest<any>): CloudResponse => azureHandler.handle(args)
