@@ -32,7 +32,7 @@ The following is a list of the currently support cloud providers:
 
 ✅ AWS Lambda  
 ✅ Azure Functions  
-⏱ Google Cloud Functions  
+🧑‍💻 Google Cloud Functions [WIP]  
 ⏱ IBM Cloud
 
 ## 🧩 Supported frameworks
