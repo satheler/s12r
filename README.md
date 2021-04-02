@@ -31,7 +31,7 @@ yarn add @satheler/s12r
 The following is a list of the currently support cloud providers:
 
 ✅ AWS Lambda  
-🧑‍💻 Azure Functions [WIP]  
+✅ Azure Functions  
 ⏱ Google Cloud Functions  
 ⏱ IBM Cloud
 
@@ -86,9 +86,13 @@ export const handle = async (...args: any[]) => {
 
 The [Serverless Framework](https://www.serverless.com) uses new event-driven compute services, like AWS Lambda, Google Cloud Functions, and more. It's a command-line tool, providing scaffolding, workflow automation and best practices for developing and deploying your serverless architecture.
 
-Below has a example of serverless configuration with typescript. The project output in `tsconfig.json` is set as `build`. The cloud provider in example is the `Amazon Web Services`. This example already includes the `Lambda Layer` with node_modules folder.
+Below has a example of serverless configuration with typescript. The project output in `tsconfig.json` is set as `build`.
 
-**`serverless.yml`**
+### Amazon Web Services (AWS)
+
+This example already includes the `Lambda Layer` with node_modules folder.
+
+**`serverless.aws.yml`**
 
 ```yaml
 service: your-service-name
@@ -135,29 +139,48 @@ layers:
     description: "node_modules dependencies"
 ```
 
-**`package.json`**
+### Microsoft Azure
 
-```json
-{
-  "name": "your-service-name",
-  "scripts": {
-    "build": "rimraf build && tsc",
-    "layer:node_modules": "rimraf temp/layers && yarn install --modules-folder ./tmp/layers/nodejs/node_modules --production=true",
-    "deploy": "yarn build && yarn layer:node_modules && yarn sls deploy",
-  },
-  "dependencies": {
-    "@satheler/s12r": "latest",
-  },
-  "devDependencies": {
-    "@types/node": "^14.14.37",
-    "rimraf": "^3.0.2",
-    "serverless": "^2.30.3",
-    "typescript": "~4.1",
-  },
-  "engines": {
-    "node": "14.x"
-  }
-}
+**`serverless.azure.yml`**
+
+```yaml
+service: your-service-name
+
+provider:
+  name: azure
+  region: ${opt:region, 'sa-east-1'}
+  runtime: nodejs12
+  stage: ${opt:stage, 'develop'}
+  stackName: ${self:provider.stage}-${self:service}
+  apiName: ${self:provider.stage}-${self:service}
+  timeout: 10
+  memorySize: 256
+  versionFunctions: false
+  apim: true
+  environment:
+    NODE_ENV: production
+    MY_ENV_VARS: true
+
+functions:
+  app:
+    handler: build/serverlessizer.handle
+    events:
+      - http: true
+        route: '{*proxy}'
+        authLevel: anonymous
+
+package:
+  include:
+    - build/**
+
+  exclude:
+    - '**/*.ts'
+    - node_modules/**
+    - tmp/**
+    - app/**
+
+plugins:
+  - serverless-azure-functions
 ```
 
 ## 📜 Licensing
