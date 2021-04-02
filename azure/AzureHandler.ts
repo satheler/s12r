@@ -1,44 +1,39 @@
-import Stream from 'stream'
-import { stringify } from 'querystring'
 import { IncomingMessage, ServerResponse } from 'http'
-import { CloudHandler, CloudRequest, CloudResponse } from '../core'
-import { ApiGatewayProxy, ApiGatewayResponse, ApiGatewayProxyEvent } from './ApiGatewayProxy'
 import { Socket } from 'net'
+import { stringify } from 'querystring'
+import Stream from 'stream'
+import { CloudHandler, CloudRequest, CloudResponse } from '../core'
+import { ApiManagementProxy } from './ApiManagementProxy'
 
-export class AWSHandler implements CloudHandler {
+export class AzureHandler implements CloudHandler {
   private isBase64Encoded!: boolean
 
-  public handle ([event, _context, callback]: CloudRequest<ApiGatewayProxy>): CloudResponse {
+  public handle([context, apiRequest]: CloudRequest<ApiManagementProxy>): CloudResponse {
     this.isBase64Encoded = process.env.BINARY_SUPPORT === 'yes'
 
-    const request: IncomingMessage = this.request(event)
-    const response: ServerResponse = this.response(callback)
+    const request: IncomingMessage = this.request(apiRequest)
+    const response: ServerResponse = this.response(context)
 
     return { request, response }
   }
 
-  private request (event: ApiGatewayProxyEvent): IncomingMessage {
+  private request(event: any): IncomingMessage {
     const request = new Stream.Readable() as IncomingMessage & { finished: true, getHeader: Function, getHeaders: Function }
 
-    request.url = event.path !== '' ? event.path : '/'
     request.finished = true
+    request.url = event.params.proxy ? `/${event.params.proxy}` : '/'
 
-    if (event.multiValueQueryStringParameters) {
-      request.url = (request.url as string).concat('?', stringify(event.multiValueQueryStringParameters))
+    if (event.query) {
+      request.url = request.url.concat('?', stringify(event.query))
     }
 
-    request.method = event.httpMethod
+    request.method = event.method
     request.rawHeaders = []
     request.headers = {}
 
-    const headers = event.multiValueHeaders || {}
+    const headers = event.headers || {}
 
     for (const key of Object.keys(headers)) {
-      const headerValues = headers[key]
-      for (const value of headerValues) {
-        request.rawHeaders.push(key)
-        request.rawHeaders.push(value)
-      }
       request.headers[key.toLowerCase()] = headers[key].toString()
     }
 
@@ -54,8 +49,8 @@ export class AWSHandler implements CloudHandler {
     return request
   }
 
-  private response (callback: Function): ServerResponse {
-    const responseInitialValues: ApiGatewayResponse = {
+  private response(context: any): ServerResponse {
+    const responseInitialValues: any = {
       headers: {},
       multiValueHeaders: {},
       body: Buffer.from(''),
@@ -69,16 +64,16 @@ export class AWSHandler implements CloudHandler {
     response.statusCode = responseInitialValues.statusCode
 
     Object.defineProperty(response, 'statusCode', {
-      get () {
+      get() {
         return responseInitialValues.statusCode
       },
-      set (statusCode) {
+      set(statusCode) {
         responseInitialValues.statusCode = statusCode
       }
     })
 
     Object.defineProperty(response, 'headersSent', {
-      get () {
+      get() {
         return headersSent
       }
     })
@@ -122,25 +117,13 @@ export class AWSHandler implements CloudHandler {
 
       responseInitialValues.multiValueHeaders = response.headers
 
-      response.writeHead(responseInitialValues.statusCode)
-      this.fixApiGatewayHeaders(responseInitialValues)
-      callback(null, responseInitialValues)
+      response.writeHead()
+      context.res = {
+        status: responseInitialValues.statusCode,
+        body: responseInitialValues.body,
+      }
     }
 
     return response
-  }
-
-  private fixApiGatewayHeaders (responseInitialValues: ApiGatewayResponse): void {
-    const { multiValueHeaders } = responseInitialValues
-
-    if (!multiValueHeaders || Object.keys(multiValueHeaders).length === 0 || multiValueHeaders.constructor !== Object) {
-      return
-    }
-
-    for (const key of Object.keys(multiValueHeaders)) {
-      if (!Array.isArray(multiValueHeaders[key])) {
-        multiValueHeaders[key] = [multiValueHeaders[key] as string]
-      }
-    }
   }
 }
