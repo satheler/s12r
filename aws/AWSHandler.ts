@@ -8,7 +8,8 @@ import { Socket } from 'net'
 export class AWSHandler implements CloudHandler {
   private isBase64Encoded!: boolean
 
-  public handle ([event, _context, callback]: CloudRequest<ApiGatewayProxy>): CloudResponse {
+  public handle ([event, context, callback]: CloudRequest<ApiGatewayProxy>): CloudResponse {
+    context.callbackWaitsForEmptyEventLoop = false
     this.isBase64Encoded = process.env.BINARY_SUPPORT === 'yes'
 
     const request: IncomingMessage = this.request(event)
