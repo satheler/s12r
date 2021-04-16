@@ -8,7 +8,7 @@ import { Socket } from 'net'
 export class AWSHandler implements CloudHandler {
   private isBase64Encoded!: boolean
 
-  public handle([event, context, callback]: CloudRequest<ApiGatewayProxy>): CloudResponse {
+  public handle ([event, context, callback]: CloudRequest<ApiGatewayProxy>): CloudResponse {
     context.callbackWaitsForEmptyEventLoop = false
     this.isBase64Encoded = process.env.BINARY_SUPPORT === 'yes'
 
@@ -18,7 +18,7 @@ export class AWSHandler implements CloudHandler {
     return { request, response }
   }
 
-  private request(event: ApiGatewayProxyEvent): IncomingMessage {
+  private request (event: ApiGatewayProxyEvent): IncomingMessage {
     const request = new Stream.Readable() as IncomingMessage & { finished: boolean, getHeader: Function, getHeaders: Function }
 
     const body = event.body ? JSON.parse(event.body) : {}
@@ -27,7 +27,7 @@ export class AWSHandler implements CloudHandler {
     const requestQuery = stringify(requestData)
 
     const path = event.path !== '' ? event.path : '/'
-    request.url = path.concat('?', requestQuery);
+    request.url = path.concat('?', requestQuery)
 
     request.finished = true
 
@@ -59,7 +59,7 @@ export class AWSHandler implements CloudHandler {
     return request
   }
 
-  private response(callback: Function): ServerResponse {
+  private response (callback: Function): ServerResponse {
     const responseInitialValues: ApiGatewayResponse = {
       headers: {},
       multiValueHeaders: {},
@@ -74,16 +74,16 @@ export class AWSHandler implements CloudHandler {
     response.statusCode = responseInitialValues.statusCode
 
     Object.defineProperty(response, 'statusCode', {
-      get() {
+      get () {
         return responseInitialValues.statusCode
       },
-      set(statusCode) {
+      set (statusCode) {
         responseInitialValues.statusCode = statusCode
       }
     })
 
     Object.defineProperty(response, 'headersSent', {
-      get() {
+      get () {
         return headersSent
       }
     })
@@ -135,7 +135,7 @@ export class AWSHandler implements CloudHandler {
     return response
   }
 
-  private fixApiGatewayHeaders(responseInitialValues: ApiGatewayResponse): void {
+  private fixApiGatewayHeaders (responseInitialValues: ApiGatewayResponse): void {
     const { multiValueHeaders } = responseInitialValues
 
     if (!multiValueHeaders || Object.keys(multiValueHeaders).length === 0 || multiValueHeaders.constructor !== Object) {
