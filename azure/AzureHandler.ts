@@ -6,11 +6,7 @@ import { CloudHandler, CloudRequest, CloudResponse } from '../core'
 import { ApiManagementProxy } from './ApiManagementProxy'
 
 export class AzureHandler implements CloudHandler {
-  private isBase64Encoded!: boolean
-
   public handle ([context, apiRequest]: CloudRequest<ApiManagementProxy>): CloudResponse {
-    this.isBase64Encoded = process.env.BINARY_SUPPORT === 'yes'
-
     const request: IncomingMessage = this.request(apiRequest)
     const response: ServerResponse = this.response(context)
 
@@ -41,8 +37,12 @@ export class AzureHandler implements CloudHandler {
     request.getHeaders = () => request.headers
     request.connection = {} as unknown as Socket
 
-    if (event.body) {
-      request.push(event.body, event.isBase64Encoded ? 'base64' : undefined)
+    console.log('type of body: ', typeof event.body)
+    console.log('body: ', event.body)
+    console.log('event: ', event)
+
+    if (event.rawBody) {
+      request.push(event.rawBody)
       request.push(null)
     }
 
@@ -54,7 +54,6 @@ export class AzureHandler implements CloudHandler {
       headers: {},
       multiValueHeaders: {},
       body: Buffer.from(''),
-      isBase64Encoded: this.isBase64Encoded,
       statusCode: 200
     }
 
@@ -111,9 +110,7 @@ export class AzureHandler implements CloudHandler {
         response.write(text)
       }
 
-      responseInitialValues.body = Buffer.from(responseInitialValues.body).toString(
-        this.isBase64Encoded ? 'base64' : undefined
-      )
+      responseInitialValues.body = Buffer.from(responseInitialValues.body)
 
       responseInitialValues.multiValueHeaders = response.headers
 
