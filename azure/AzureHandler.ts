@@ -8,7 +8,7 @@ import { ApiManagementProxy } from './ApiManagementProxy'
 export class AzureHandler implements CloudHandler {
   private isBase64Encoded!: boolean
 
-  public handle([context, apiRequest]: CloudRequest<ApiManagementProxy>): CloudResponse {
+  public handle ([context, apiRequest]: CloudRequest<ApiManagementProxy>): CloudResponse {
     this.isBase64Encoded = process.env.BINARY_SUPPORT === 'yes'
 
     const request: IncomingMessage = this.request(apiRequest)
@@ -17,7 +17,7 @@ export class AzureHandler implements CloudHandler {
     return { request, response }
   }
 
-  private request(event: any): IncomingMessage {
+  private request (event: any): IncomingMessage {
     const request = new Stream.Readable() as IncomingMessage & { finished: true, getHeader: Function, getHeaders: Function }
 
     request.finished = true
@@ -49,7 +49,7 @@ export class AzureHandler implements CloudHandler {
     return request
   }
 
-  private response(context: any): ServerResponse {
+  private response (context: any): ServerResponse {
     const responseInitialValues: any = {
       headers: {},
       multiValueHeaders: {},
@@ -64,16 +64,16 @@ export class AzureHandler implements CloudHandler {
     response.statusCode = responseInitialValues.statusCode
 
     Object.defineProperty(response, 'statusCode', {
-      get() {
+      get () {
         return responseInitialValues.statusCode
       },
-      set(statusCode) {
+      set (statusCode) {
         responseInitialValues.statusCode = statusCode
       }
     })
 
     Object.defineProperty(response, 'headersSent', {
-      get() {
+      get () {
         return headersSent
       }
     })
@@ -120,7 +120,7 @@ export class AzureHandler implements CloudHandler {
       response.writeHead()
       context.res = {
         status: responseInitialValues.statusCode,
-        body: responseInitialValues.body,
+        body: responseInitialValues.body
       }
     }
 
