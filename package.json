@@ -1,6 +1,6 @@
 {
   "name": "@satheler/s12r",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Serverlessize your node application",
   "main": "build/index.js",
   "author": "Gustavo Bittencourt Satheler <gustavosatheler@gmail.com>",
