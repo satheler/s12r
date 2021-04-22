@@ -37,10 +37,6 @@ export class AzureHandler implements CloudHandler {
     request.getHeaders = () => request.headers
     request.connection = {} as unknown as Socket
 
-    console.log('type of body: ', typeof event.body)
-    console.log('body: ', event.body)
-    console.log('event: ', event)
-
     if (event.rawBody) {
       request.push(event.rawBody)
       request.push(null)
