@@ -21,13 +21,9 @@ export class AWSHandler implements CloudHandler {
   private request (event: ApiGatewayProxyEvent): IncomingMessage {
     const request = new Stream.Readable() as IncomingMessage & { finished: boolean, getHeader: Function, getHeaders: Function }
 
-    const body = event.body ? JSON.parse(event.body) : {}
-
-    const requestData = !event.queryStringParameters ? body : Object.assign({}, event.queryStringParameters, body)
-    const requestQuery = stringify(requestData)
-
+    const requestQuery = stringify(event.queryStringParameters)
     const path = event.path !== '' ? event.path : '/'
-    request.url = path.concat('?', requestQuery)
+    request.url = requestQuery ? path.concat('?', requestQuery) : path
 
     request.finished = true
 
@@ -52,10 +48,15 @@ export class AWSHandler implements CloudHandler {
 
     if (event.body) {
       const bufferEncoding = event.isBase64Encoded ? 'base64' : undefined
+
+      const contentLength = Buffer.byteLength(event.body, 'utf-8')
+      request.headers['content-length'] = contentLength.toString()
+
       request.push(event.body, bufferEncoding)
       request.push(null)
     }
 
+    console.log(request)
     return request
   }
 
