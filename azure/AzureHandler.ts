@@ -113,7 +113,8 @@ export class AzureHandler implements CloudHandler {
       response.writeHead()
       context.res = {
         status: responseInitialValues.statusCode,
-        body: responseInitialValues.body
+        body: responseInitialValues.body,
+        headers: response.headers
       }
     }
 
