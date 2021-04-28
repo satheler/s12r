@@ -56,7 +56,6 @@ export class AWSHandler implements CloudHandler {
       request.push(null)
     }
 
-    console.log(request)
     return request
   }
 
