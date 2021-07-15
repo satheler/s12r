@@ -1,6 +1,6 @@
 # Serverlessizer (S12R)
 
-Serverlessize your Node.js backend application to main clouds providers. With this package you can run your application on the **Function as a Service** on many cloud providers with same configuration.
+Serverlessize your Node.js backend application to main clouds providers. With this package you can run your application on the **Function as a Service** on many cloud providers with the same configuration.
 
 ## 📑 Overview
 
@@ -12,7 +12,8 @@ Serverlessize your Node.js backend application to main clouds providers. With th
    - **[Hapi (Coming soon)](#hapi-coming-soon)**
    - **[LoopBack (Coming soon)](#loopback-coming-soon)**
 4. **[⚡️ Serverless Framework](#%EF%B8%8F-serverless-framework)**
-5. **[📜 Licensing](#-licensing)**
+5. **[🎲 Examples](#-examples)**
+6. **[📜 Licensing](#-licensing)**
 
 ## 📥 Installation
 
@@ -67,11 +68,9 @@ async function bootstrapServer() {
   await httpServer.application.bootProviders()
   await httpServer.application.requirePreloads()
 
-
   const serverCore = httpServer.application.container.use('Adonis/Core/Server')
   serverCore.errorHandler('App/Exceptions/Handler')
   serverCore.optimize()
-
 
   const server = serverCore.handle.bind(serverCore)
   return server
@@ -159,40 +158,56 @@ service: your-service-name
 
 provider:
   name: azure
-  region: ${opt:region, 'sa-east-1'}
-  runtime: nodejs12
+  location: ${opt:location, 'brazilsouth'}
+  runtime: nodejs14
   stage: ${opt:stage, 'develop'}
-  stackName: ${self:provider.stage}-${self:service}
-  apiName: ${self:provider.stage}-${self:service}
-  timeout: 10
   memorySize: 256
-  versionFunctions: false
-  apim: true
+  apim:
+    backends:
+      - name: satheler-survey-backend
+        url: ''
   environment:
     NODE_ENV: production
     MY_ENV_VARS: true
 
 functions:
-  app:
+  build:
     handler: build/serverlessizer.handle
+    apim:
+      backend: satheler-survey-backend
+      operations:
+        - method: '*'
+          urlTemplate: '/satheler-survey'
+          displayName: SathelerSurvey
     events:
       - http: true
         route: '{*proxy}'
         authLevel: anonymous
 
 package:
-  include:
+  patterns:
     - build/**
-
-  exclude:
-    - '**/*.ts'
-    - node_modules/**
-    - tmp/**
-    - app/**
+    - '!.github/**'
+    - '!.vscode/**'
+    - '!app/**'
+    - '!commands/**'
+    - '!config/**'
+    - '!contracts/**'
+    - '!database/**'
+    - '!providers/**'
+    - '!scripts/**'
+    - '!start/**'
+    - '!tests/**'
+    - '!tmp/**'
 
 plugins:
   - serverless-azure-functions
 ```
+
+## 🎲 Examples
+
+- [satheler-survey](https://github.com/satheler/satheler-survey) - A multicloud serverless application for undergraduate thesis
+- [adonis-serverless](https://github.com/tomhatzer/adonis-serverless) - Example repository for running AdonisJS on AWS Lambda.
 
 ## 📜 Licensing
 
