@@ -45,34 +45,45 @@ The following sections is the currently support frameworks.
 
 ```typescript
 import 'reflect-metadata'
-import { ServerContract } from '@ioc:Adonis/Core/Server'
 import { Ignitor } from '@adonisjs/core/build/standalone'
-import Serverlessizer from '@satheler/s12r'
+import Serverlessize from '@satheler/s12r'
 
-let server: ServerContract
+process.on('unhandledRejection', (reason) => {
+  console.error(reason)
+})
 
-async function bootstrapServer () {
+process.on('uncaughtException', (reason) => {
+  console.error(reason)
+})
+
+let server: Function
+
+async function bootstrapServer() {
   const ignitor = new Ignitor(__dirname)
   const httpServer = ignitor.httpServer()
 
-  httpServer.application.setup()
-  httpServer.application.registerProviders()
-  httpServer.application.requirePreloads()
+  await httpServer.application.setup()
+  await httpServer.application.registerProviders()
   await httpServer.application.bootProviders()
+  await httpServer.application.requirePreloads()
 
-  const server = httpServer.application.container.use('Adonis/Core/Server')
-  server.optimize()
 
+  const serverCore = httpServer.application.container.use('Adonis/Core/Server')
+  serverCore.errorHandler('App/Exceptions/Handler')
+  serverCore.optimize()
+
+
+  const server = serverCore.handle.bind(serverCore)
   return server
 }
 
 export const handle = async (...args: any[]) => {
-  if(!server) {
+  if (!server) {
     server = await bootstrapServer()
   }
 
-  const { request, response } = Serverlessizer(args)
-  return server.handle(request, response)
+  const { request, response } = Serverlessize(args)
+  return server(request, response)
 }
 ```
 
