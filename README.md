@@ -13,7 +13,8 @@ Serverlessize your Node.js backend application to main clouds providers. With th
    - **[LoopBack (Coming soon)](#loopback-coming-soon)**
 4. **[⚡️ Serverless Framework](#%EF%B8%8F-serverless-framework)**
 5. **[🎲 Examples](#-examples)**
-6. **[📜 Licensing](#-licensing)**
+6. **[💪 Contributing](#-contributing)**
+7. **[📜 Licensing](#-licensing)**
 
 ## 📥 Installation
 
@@ -208,6 +209,10 @@ plugins:
 
 - [satheler-survey](https://github.com/satheler/satheler-survey) - A multicloud serverless application for undergraduate thesis
 - [adonis-serverless](https://github.com/tomhatzer/adonis-serverless) - Example repository for running AdonisJS on AWS Lambda.
+
+## 💪 Contributing
+
+We welcome community contributions and pull requests. See [CONTRIBUTING.md](https://github.com/satheler/s12r/blob/main/CONTRIBUTING.md) for information on how to set up a development environment and submit code.
 
 ## 📜 Licensing
 
